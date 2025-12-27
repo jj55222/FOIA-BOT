@@ -1,0 +1,17 @@
+# Video download and processing
+yt-dlp>=2023.12.30
+
+# Court document APIs
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# News scraping
+feedparser>=6.0.10
+newspaper3k>=0.2.8
+
+# Data processing
+pandas>=2.1.0
+matplotlib>=3.8.0
+
+# Optional: local whisper fallback (uncomment if needed)
+# openai-whisper>=20231117

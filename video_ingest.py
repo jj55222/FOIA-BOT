@@ -45,6 +45,16 @@ def download_video_and_captions(youtube_url, output_dir):
 
     except subprocess.CalledProcessError as e:
         print(f"❌ Error downloading video: {e}")
+        if e.stderr:
+            print(f"\nyt-dlp error output:")
+            print(e.stderr)
+        if e.stdout:
+            print(f"\nyt-dlp output:")
+            print(e.stdout)
+        print("\n💡 Common issues:")
+        print("   - Video may be private or age-restricted")
+        print("   - Check your internet connection")
+        print("   - Ensure yt-dlp is up to date: pip install -U yt-dlp")
         sys.exit(1)
 
 

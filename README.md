@@ -208,6 +208,57 @@ case_YYYYMMDD_<slug>/
 
 Agents read & write inside the case folder to avoid external storage costs.
 
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### yt-dlp Download Failures
+
+If video download fails, you'll now see the detailed error output. Common causes:
+
+- **Video is private or age-restricted**: Some videos require authentication
+- **Network issues**: Check your internet connection
+- **Outdated yt-dlp**: Update with `pip install -U yt-dlp`
+- **Rate limiting**: YouTube may temporarily block requests
+
+**Solution**: Try a different video or wait a few minutes before retrying.
+
+#### newspaper3k ImportError
+
+```
+ImportError: lxml.html.clean module is now a separate project lxml_html_clean.
+```
+
+**Solution**: This is fixed in requirements.txt. Ensure you've installed all dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Or install directly:
+
+```bash
+pip install lxml_html_clean
+```
+
+#### No Captions Available
+
+If YouTube doesn't provide auto-captions, you can:
+
+1. Use a video with English captions
+2. Enable local Whisper fallback (see code comments in `video_ingest.py`)
+3. Manually provide a transcript in VTT format
+
+#### Empty or Missing Results
+
+If scraping returns no results:
+
+- **Court docs**: Case may not have public records yet, or names weren't detected
+- **FOIA media**: Not all cases have publicly released media
+- **News articles**: Try providing specific search terms manually
+
+The pipeline continues even if some steps fail, so you'll still get a bundle with available data.
+
 ## 🤝 Contributing
 
 Contributions welcome! Areas for improvement:

@@ -51,26 +51,34 @@ pip install yt-dlp
 
 ### 2b. Process a Case (Google Colab)
 
-**Option 1: Use the Notebook (Easiest)**
+**📖 See [COLAB_QUICKSTART.md](COLAB_QUICKSTART.md) for detailed Colab instructions**
 
-1. Open `FOIA_BOT_Colab.ipynb` in Google Colab
-2. Run the Setup cell (first time only)
-3. Edit the YouTube URL in the Config cell
-4. Run the Process cell
-5. Download your bundle from Google Drive
-
-**Option 2: Use the Setup Script**
+**Quick Method (Copy-Paste into Colab):**
 
 ```python
-# In a Colab cell:
-!git clone https://github.com/jj55222/FOIA-BOT.git /content/drive/MyDrive/foia_bot/repo
-%cd /content/drive/MyDrive/foia_bot/repo
-!python3 colab_setup.py
+# 1. Mount Drive & Install
+from google.colab import drive
+drive.mount('/content/drive')
+!pip install -q yt-dlp requests beautifulsoup4 feedparser newspaper3k lxml_html_clean pandas matplotlib
 
-# Then process a case:
-from colab_setup import process_case
-process_case("https://www.youtube.com/watch?v=VIDEO_ID", "my_case_name")
+# 2. Clone repo (first time only)
+from pathlib import Path
+repo_dir = Path('/content/drive/MyDrive/foia_bot/repo')
+if not (repo_dir / 'video_ingest.py').exists():
+    !git clone https://github.com/jj55222/FOIA-BOT.git {str(repo_dir)}
+
+# 3. Run pipeline
+import os
+os.chdir(str(repo_dir))
+!mkdir -p test_case && cd test_case
+!python3 {str(repo_dir)}/video_ingest.py "YOUR_YOUTUBE_URL"
+!python3 {str(repo_dir)}/court_docs.py
+!python3 {str(repo_dir)}/foia_media_scraper.py
+!python3 {str(repo_dir)}/news_scraper.py
+!python3 {str(repo_dir)}/packager.py
 ```
+
+**Or use the interactive notebook:** Open `FOIA_BOT_Colab.ipynb` in Google Colab
 
 **That's it! The script will:**
 1. Download the video and captions

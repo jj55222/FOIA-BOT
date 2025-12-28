@@ -2,6 +2,8 @@
 
 **Free, zero-cost video case bundler for investigative journalism and true crime research**
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jj55222/FOIA-BOT/blob/main/FOIA_BOT_Colab.ipynb)
+
 FOIA-BOT automatically processes YouTube videos about criminal cases and creates comprehensive research bundles by:
 - Downloading videos and extracting captions
 - Categorizing content (court proceedings, FOIA materials, news)
@@ -41,13 +43,36 @@ pip install -r requirements.txt
 pip install yt-dlp
 ```
 
-### 2. Process a Case
+### 2a. Process a Case (Local/Terminal)
 
 ```bash
 ./process_case.sh "https://www.youtube.com/watch?v=VIDEO_ID" my_case_name
 ```
 
-That's it! The script will:
+### 2b. Process a Case (Google Colab)
+
+**Option 1: Use the Notebook (Easiest)**
+
+1. Open `FOIA_BOT_Colab.ipynb` in Google Colab
+2. Run the Setup cell (first time only)
+3. Edit the YouTube URL in the Config cell
+4. Run the Process cell
+5. Download your bundle from Google Drive
+
+**Option 2: Use the Setup Script**
+
+```python
+# In a Colab cell:
+!git clone https://github.com/jj55222/FOIA-BOT.git /content/drive/MyDrive/foia_bot/repo
+%cd /content/drive/MyDrive/foia_bot/repo
+!python3 colab_setup.py
+
+# Then process a case:
+from colab_setup import process_case
+process_case("https://www.youtube.com/watch?v=VIDEO_ID", "my_case_name")
+```
+
+**That's it! The script will:**
 1. Download the video and captions
 2. Tag content by type (court/FOIA/secondary)
 3. Search for court documents
@@ -258,6 +283,25 @@ If scraping returns no results:
 - **News articles**: Try providing specific search terms manually
 
 The pipeline continues even if some steps fail, so you'll still get a bundle with available data.
+
+#### Google Colab "No such file or directory"
+
+If you get errors like `bash: process_case.sh: No such file or directory`:
+
+1. **Mount Google Drive first**:
+   ```python
+   from google.colab import drive
+   drive.mount('/content/drive')
+   ```
+
+2. **Use the Colab notebook** (`FOIA_BOT_Colab.ipynb`) instead of bash commands
+
+3. **Or navigate to the repo directory**:
+   ```python
+   %cd /content/drive/MyDrive/foia_bot/repo
+   ```
+
+4. **Don't use bash scripts** - Use the Python functions from `colab_setup.py` instead
 
 ## 🤝 Contributing
 

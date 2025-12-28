@@ -47,7 +47,10 @@ def search_courtlistener(name, output_dir):
     """Search CourtListener RECAP for free court documents"""
     print(f"\n📚 Searching CourtListener for: {name}")
 
-    # CourtListener API (free, no key required for basic search)
+    # CourtListener API - Optional API key from environment
+    import os
+    api_key = os.environ.get('COURTLISTENER_API_KEY')
+
     search_url = "https://www.courtlistener.com/api/rest/v3/search/"
 
     params = {
@@ -56,8 +59,16 @@ def search_courtlistener(name, output_dir):
         'order_by': 'score desc'
     }
 
+    headers = {}
+    if api_key:
+        headers['Authorization'] = f'Token {api_key}'
+    else:
+        print(f"  ℹ️  No API key set. Get one at: https://www.courtlistener.com/sign-in/")
+        print(f"  ℹ️  Skipping CourtListener (requires authentication)")
+        return []
+
     try:
-        response = requests.get(search_url, params=params, timeout=10)
+        response = requests.get(search_url, params=params, headers=headers, timeout=10)
         response.raise_for_status()
         data = response.json()
 
@@ -233,14 +244,17 @@ def main():
     cues_file = working_dir / 'cues.json'
     transcript_file = working_dir / 'transcript.vtt'
 
-    # Try to extract names from transcript
-    names = extract_names_from_transcript(transcript_file)
+    # PRIORITY: Command line argument overrides extraction
+    if len(sys.argv) > 1:
+        # Use manually provided name
+        names = [' '.join(sys.argv[1:])]
+        print(f"🎯 Using provided name: {names[0]}")
+    else:
+        # Try to extract names from transcript
+        names = extract_names_from_transcript(transcript_file)
 
-    if not names:
-        print("\n⚠️  No names found in transcript. You can manually specify names as arguments.")
-        if len(sys.argv) > 1:
-            names = [' '.join(sys.argv[1:])]
-        else:
+        if not names:
+            print("\n⚠️  No names found in transcript. You can manually specify names as arguments.")
             print("Usage: python court_docs.py [optional: \"Name to search\"]")
             sys.exit(1)
 
